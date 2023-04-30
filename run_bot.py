@@ -46,6 +46,24 @@ async def serch_meal_by_name(message: Message):
     # target_id = meals_variation[new_input]
     # title, instruction = get_reciept_via_id(target_id)
 
+
+@dispatcher.callback_query_handler()
+async def catch_callback_data(call_back: types.CallbackQuery):
+
+
+    reciept_id = call_back.data
+    title, instructions, image = await get_reciept_via_id(reciept_id)
+    # print(reciept_id, type(reciept_id), sep='\n')
+    #
+    if len(instructions + title) < 1000:
+        await bot.send_photo(chat_id=call_back.from_user.id, photo=image,caption=f'<b><i>{title}:</i></b>\n<i>{instructions}</i>')
+    else:
+        await bot.send_photo(chat_id=call_back.from_user.id, photo=image,
+                             caption=f'<b><i>{title}:</i></b>')
+        await bot.send_message(chat_id=call_back.from_user.id, text=instructions)
+    return await call_back.answer('Thank you for cooperating, kindly wait ...')
+
+
 @dispatcher.message_handler()
 async def echo_handler(message: types.Message) -> None:
     """
@@ -69,5 +87,8 @@ async def  on_startup(_):
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    executor.start_polling(dispatcher, skip_updates=True, on_startup=on_startup)
+    try:
+        # logging.basicConfig(level=logging.INFO)
+        executor.start_polling(dispatcher, skip_updates=True, on_startup=on_startup)
+    except Exception as error:
+        print(f'Error name:{error}')

@@ -39,18 +39,26 @@ async def get_reciept_by_name(name: str) -> list[dict]:
     # results = response.json()
     # results = results.get('results')
     conn = aiohttp.TCPConnector()
-    async with aiohttp.ClientSession(connector=conn) as session:
 
-        async with session.get(url, headers=headers, params=querystring, ssl=False) as response:
-            results = await response.json()
+    async with aiohttp.ClientSession(connector=conn, conn_timeout=120.0) as session:
+        try:
 
-        with open(f'reciept_{name}.json', 'w') as file:
-            json.dump(results, file, indent=4)
+            async with session.get(url, headers=headers, params=querystring, ssl=False) as response:
+                results = await response.json()
+
+            # with open(f'reciept_{name}.json', 'w') as file:
+            #     json.dump(results, file, indent=4)
     # print(results)
+        except aiohttp.ClientConnectorError as err_1:
+
+            print(f'Connection error: {url}', str(err_1))
+        except aiohttp.ClientOSError as err_2:
+            print(f'Connection error: {url}', str(err_2))
+
     return results.get('results')
 
 
-def get_reciept_via_id(meal_id: int) -> tuple[str, str]:
+async def get_reciept_via_id(meal_id: str) -> tuple[str, str, str]:
     url = f"https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/{meal_id}/information"
 
     headers = {
@@ -59,13 +67,23 @@ def get_reciept_via_id(meal_id: int) -> tuple[str, str]:
         "X-RapidAPI-Host": "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
     }
 
-    response = requests.get(url, headers=headers)
+    conn = aiohttp.TCPConnector()
 
-    result = response.json()
-    title = result.get('title')
-    instructions = result.get('instructions')
+    async with aiohttp.ClientSession(connector=conn, conn_timeout=120.0) as session:
+        try:
+            async with session.get(url, headers=headers, ssl=False) as response:
+                results = await response.json()
 
-    return title, instructions
+            image = results.get('image')
+            title = results.get('title')
+            instructions = results.get('instructions')
+            # with open(f'reciept_{meal_id}.json', 'w') as file:
+                # json.dump(results, file, indent=4)
+        except aiohttp.ClientConnectorError as err_1:
+                print(f'Connection error: {url}', str(err_1))
+        except aiohttp.ClientOSError as err_2:
+            print(f'Connection error: {url}', str(err_2))
+    return title, instructions, image
 
 
 def search_receapt(user_input) -> str:
