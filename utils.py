@@ -5,7 +5,7 @@ import json
 import logging
 import aiohttp
 from deep_translator import GoogleTranslator
-from googletrans import Translator
+
 from Postgres.ddl import post_receipt
 
 from DB.ddl import save_reciepts
