@@ -40,7 +40,8 @@ from DB.ddl import save_reciepts
 
 async def get_reciept_by_name(name: str) -> list[dict]:
     url = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/complexSearch"
-    querystring = {"query": name, "instructionsRequired": "true"}
+    translated = GoogleTranslator(source='auto', target='en').translate(name)
+    querystring = {"query": translated, "instructionsRequired": "true"}
     headers = {
         "content-type": "application/octet-stream",
         "X-RapidAPI-Key": "2e92981949mshe241e8b3014805cp11d7f5jsn5a51289967e8",

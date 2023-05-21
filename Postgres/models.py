@@ -10,6 +10,7 @@ class User(Base):
     last_name = Column(String(50), nullable=True)
     created_date = Column(Date, default=func.now())
     active = Column(Boolean, default=True)
+    language = Column(String(10), default='en')
 
 
 
