@@ -29,10 +29,10 @@ def get_reciept_from_db(meal_id: int):
 
 def add_view(meal_id):
     receipt = session.query(Receipt).filter(Receipt.id == meal_id).first()
-
-    receipt.reviews += 1
-    session.add(receipt)
-    session.commit()
+    if receipt:
+        receipt.reviews += 1
+        session.add(receipt)
+        session.commit()
 
 
 def get_users():

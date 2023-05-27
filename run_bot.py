@@ -185,9 +185,9 @@ async def scheduler():
 if __name__ == "__main__":
 
     # asyncio.run(send_most_common())
-    asyncio.run(send_random_reciept())
-    # try:
-    #     # logging.basicConfig(level=logging.INFO)
-    #     executor.start_polling(dispatcher, skip_updates=True, on_startup=on_startup)
-    # except Exception as error:
-    #     print(f'Error name:{error}')
+    # asyncio.run(send_random_reciept())
+    try:
+        # logging.basicConfig(level=logging.INFO)
+        executor.start_polling(dispatcher, skip_updates=True, on_startup=on_startup)
+    except Exception as error:
+        print(f'Error name:{error}')
